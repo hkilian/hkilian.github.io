@@ -1,0 +1,197 @@
+<!DOCTYPE html><html lang="">
+  <head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Update 7: Fixed Camera Rendering - Harry Kilian</title>
+<meta name="description" content="I’ve had this idea for a fixed camera rendering system in the back of my mind for a little while. I thought I would put together a proof of concept. Basicall...">
+<link rel="canonical" href="/graphics/progress/2017/02/16/update-7-fixed-camera-rendering.html"><link rel="alternate" type="application/rss+xml" title="Harry Kilian" href="/feed.xml">
+<!-- for Safari on iOS https://developer.apple.com/ios/human-interface-guidelines/icons-and-images/app-icon/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/logo/icon-180x180.png"><link rel="apple-touch-icon" sizes="167x167" href="/assets/images/logo/icon-167x167.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/logo/icon-152x152.png"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/logo/icon-120x120.png"><link rel="shortcut icon" href="/assets/images/logo/icon-120x120.png">
+<!-- for Chrome on Android https://developer.chrome.com/multidevice/android/installtohomescreen -->
+<meta name="mobile-web-app-capable" content="yes"><link rel="icon" sizes="192x192" href="/assets/images/logo/icon-192x192.png">
+<!-- for Edge on Windows 10 https://msdn.microsoft.com/en-us/library/dn255024(v=vs.85).aspx --><meta name="msapplication-TileImage" content="/assets/images/logo/icon-144x144.png"><meta name="msapplication-square310x310logo" content="/assets/images/logo/icon-310x310.png"><meta name="msapplication-wide310x150logo" content="/assets/images/logo/icon-310x150.png"><meta name="msapplication-square150x150logo" content="/assets/images/logo/icon-150x150.png"><meta name="msapplication-square70x70logo" content="/assets/images/logo/icon-70x70.png">
+<meta name="msapplication-TileColor" content="#eeeeee"><link rel="stylesheet" href="/assets/css/blog.css">
+    <style></style>
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="m-page-stage js-page-stage"><div class="m-page-content"><header class="m-page-header main clearfix"><a class="site-title" title="Personal blog to post experiments." href="/">Harry Kilian</a><nav>
+    <ul class="inline-list"><li><a href="/"></a></li><li><a href="/all.html"></a></li><li><a href="/about.html">About</a></li><li><a type="application/rss+xml" href="/feed.xml"></a></li>
+    </ul>
+  </nav>
+</header>
+<div class="m-page-main"><div class="m-post">
+	<div class="main js-main">
+		<div class="col-1">
+			<article itemscope itemtype="http://schema.org/BlogPosting">
+				<meta itemprop="mainEntityOfPage" itemscope itemType="https://schema.org/WebPage"/>
+				<header class="article-header"><h1 itemprop="headline" itemprop="name headline">Update 7: Fixed Camera Rendering</h1><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><time class="article-meta" datetime="2017-02-16T16:27:45+00:00"
+          itemprop="datePublished">2017-02-16 16:27:45 +0000
+        </time></div>
+  </div>
+</div>
+</header>
+				<div class="m-article-content js-article-content" itemprop="articleBody"><p>I’ve had this idea for a fixed camera rendering system in the back of my mind for a little while. I thought I would put together a proof of concept. Basically the idea is that the world can only be viewed in isometric and top down oblique perspective, but the game is still a fully 3d world. The idea spawned when I was watching this <a href="https://www.youtube.com/watch?v=5UKKaTGwIqc">video</a> by Roller Coaster Tycoon 1&amp;2 artist Simon Foster. He explains the process for creating the graphics for both games. He creates game models in 3d studio max and renders them out at different angles. Then he would manually put them on a giant sprite sheet ready for use in the game. It got me thinking, what if I could render 3d models to a sprite sheet in the actual game, as well as normals and depth for the model. This would allow for procedurally generated sprites.</p>
+
+<p>Obviously this kind of graphics has its drawbacks. You can’t rotate the camera freely to any angle. Instead you can only view the world at only 8  fixed angles, 4 of which resemble an isometric view (Although it isn’t true isometric). I did a bit of research and a guy on youtube has implemented a similar idea <a href="https://www.youtube.com/watch?v=-Q6ISVaM5Ww">here</a>. Very cool effect, he uses high poly pre rendered assets where ambient occlusion has been baked in.</p>
+
+<h2 id="stress-testing">Stress Testing</h2>
+<p>Here is a stress test with 1000+ models and 200+ lights. The engine maintains a solid frame rate (on my 5 yr old macbook pro).</p>
+
+<p><img src="/assets/stresstest.jpg" alt="screenshot" /></p>
+
+<p><img src="/assets/2.jpg" alt="screenshot" /></p>
+
+<p><img src="/assets/4.jpg" alt="screenshot" /></p>
+
+<p>I’m basically taking the common graphics optimization technique referred to as ‘imposters’ to a next level, imposters are where a 2d image replaces 3d geometry at a certain LOD. Say for example in a video game, a complex tree model would get replaced with an image of the tree when it’s viewed from far away. Difference is, these imposters look exactly the same as the original model. By storing depth and normals they can be lit as if they were 3d in realtime.</p>
+
+<p>Behind the scenes the engine renders a model 8 times from different angles. Then it puts the data onto one single texture atlas. When the model needs to be rendered, just a single polygon is drawn on screen. The normals and depth for that part of the screen are taken straight from the atlas.  In theory, the final output should be no different than having rendered a full 3d geometry, assuming the camera maintains a fixed position. This is just a proof of concept at the moment, I haven’t tested how this really performs compared to normal 3D geometry. I’m not convinced the savings will be that great right now but this rendering method opens doors to other optimisations later on.</p>
+
+<p><img src="/assets/depthnormals.jpg" alt="screenshot" /></p>
+
+<p>For this type of rendering to work, depth is compared using the Y axis in world space. This is different from a typical depth buffer which would hold depth values in window space. The issue is that in a deferred rendering system, when G Buffers are brought together and the scene is lit, world coordinates are calculated directly from the depth buffer. You need world coordinates in order to calculate the distance to light source. That works fine normally but when depth is only worldspace Y axis it’s not enough to do lighting calculation. The solution is pretty simple,  I’ve actually done away with the depth buffer and replaced it with a position buffer. Meaning, I store XYZ for each frag in an RGB channels of a texture. This was just a bit of fun, but it might have some use within the game, maybe for trees and for models viewed at a distance.</p>
+
+<h2 id="further-reading">Further reading</h2>
+
+<p><a href="http://blog.wolfire.com/2010/10/Imposters">http://blog.wolfire.com/2010/10/Imposters</a></p>
+
+<p><a href="http://http.developer.nvidia.com/GPUGems3/gpugems3_ch21.html">http://http.developer.nvidia.com/GPUGems3/gpugems3_ch21.html</a></p>
+
+<p><a href="https://software.intel.com/en-us/articles/impostors-made-easy">https://software.intel.com/en-us/articles/impostors-made-easy</a></p>
+</div>
+				<footer><meta itemprop="dateModified" content="2017-02-16T16:27:45+00:00"></footer><section></section>
+					<section></section></article>
+		</div>
+		<div class="col-2">
+			<aside class="js-article-aside"><div class="m-toc js-toc"></div></aside>
+		</div>
+	</div>
+</div>
+
+<script src="//cdn.bootcss.com/toc/0.3.2/toc.min.js"></script>
+<script type="text/javascript">
+	window.throttle = function(func, wait) {
+	  var args, result, thisArg, timeoutId, lastCalled = 0;
+
+	  function trailingCall() {
+	    lastCalled = new Date;
+	    timeoutId = null;
+	    result = func.apply(thisArg, args);
+	  }
+	  return function() {
+	    var now = new Date,
+	      remaining = wait - (now - lastCalled);
+
+	    args = arguments;
+	    thisArg = this;
+
+	    if (remaining <= 0) {
+	      clearTimeout(timeoutId);
+	      timeoutId = null;
+	      lastCalled = now;
+	      result = func.apply(thisArg, args);
+	    } else if (!timeoutId) {
+	      timeoutId = setTimeout(trailingCall, remaining);
+	    }
+	    return result;
+	  };
+	}
+	$(function() {
+	  var $window = $(window);
+	  var $pageStage = $('.js-page-stage');
+	  var $pageMain = $('.js-main');
+	  var $pageFooter = $('.js-page-footer');
+	  var $articleContent = $('.js-article-content');
+	  var $articleAside = $('.js-article-aside');
+	  var $toc = $('.js-toc');
+	  var hasTitle = $articleContent.find('h1, h2, h3').length > 0;
+
+	  function asideSticky() {
+	    return $window.outerWidth() > 1150 && $pageStage.hasClass('has-toc');
+	  }
+
+	  function setTocClass() {
+	    if (hasTitle) {
+	      !$pageStage.hasClass('has-toc') && $pageStage.addClass('has-toc');
+	    }
+	  }
+
+	  setTocClass();
+
+	  function setAsideTOC() {
+	    var asideTop, asideLeft, scrollBottom, asideBottomTop, lastScrollTop;
+
+	    function init() {
+	      var asideOffset = $articleAside.offset();
+	      var footerOffset = $pageFooter.offset();
+	      var mainOffset = $pageMain.offset();
+	      asideTop = mainOffset.top;
+	      asideHeight = $toc.outerHeight() + parseInt($articleAside.css('padding-top'), 10) + parseInt($articleAside.css('padding-bottom'), 10);
+	      asideLeft = mainOffset.left + $pageMain.outerWidth() - $articleAside.outerWidth() - parseInt($pageMain.css('padding-right'), 10);
+	      scrollBottom = footerOffset.top - asideHeight;
+	      asideBottomTop = scrollBottom - mainOffset.top;
+	    }
+
+	    function setAside(force) {
+	      force !== true && (force = false);
+	      var scrollTop = $window.scrollTop();
+	      if (scrollTop >= asideTop && scrollTop <= scrollBottom) {
+	        (!force && lastScrollTop >= asideTop && lastScrollTop <= scrollBottom) ||
+	        $articleAside.addClass('fixed').css({
+	          left: asideLeft + 'px',
+	          top: 0
+	        });
+	      } else if (scrollTop < asideTop) {
+	        (!force && lastScrollTop < asideTop) ||
+	        $articleAside.removeClass('fixed').css({
+	          left: 0,
+	          top: 0
+	        });
+	      } else {
+	        (!force && lastScrollTop > scrollBottom) ||
+	        $articleAside.removeClass('fixed').css({
+	          left: 0,
+	          top: asideBottomTop + 'px'
+	        });
+	      }
+	      lastScrollTop = scrollTop;
+	    }
+	    asideSticky() && (init(), setAside());
+	    $window.on('scroll', function() {
+	      asideSticky() && setAside();
+	    });
+	    $window.on('resize', throttle(function() {
+	      setTocClass();
+	      asideSticky() && (init(), setAside(true));
+	    }, 100));
+	    setTimeout(init, 4000);
+	  }
+	  setTimeout(setAsideTOC, 1000);
+
+	  $toc.toc({
+	    'selectors': 'h1,h2,h3',
+	    'container': '.js-article-content',
+	  });
+	});
+</script></div>
+</div>
+</div><div class="m-page-footer js-page-footer">
+  <div class="main">
+    <aside><div class="follow-me"><ul class="inline-list" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="">
+    <link itemprop="url" href="/"></ul></div>
+</aside>
+    <footer class="site-info">
+      <p>© Harry Kilian </p>
+      <p>Powered by <a title="Jekyll is a simple, blog-aware, static site generator." href="http://jekyllrb.com/">Jekyll</a> & <a
+        title="TeXt is a succinct theme for blogging." href="https://github.com/kitian616/jekyll-TeXt-theme">TeXt Theme</a>.</p>
+    </footer>
+  </div>
+</div><script>
+      $(function() {
+        // display coding language
+        $(".highlight").each(function() {
+          $(this).attr("data-lang", $(this).find("code").attr("data-lang"));
+        });
+      });
+    </script></body>
+</html>

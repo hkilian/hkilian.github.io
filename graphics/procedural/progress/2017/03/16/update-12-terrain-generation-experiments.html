@@ -1,0 +1,193 @@
+<!DOCTYPE html><html lang="">
+  <head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Update 12: Terrain Generation Experiments - Harry Kilian</title>
+<meta name="description" content="I talked before about the improved noise system. I’ve been playing around and experimenting with different parameters, getting some interesting results. The ...">
+<link rel="canonical" href="/graphics/procedural/progress/2017/03/16/update-12-terrain-generation-experiments.html"><link rel="alternate" type="application/rss+xml" title="Harry Kilian" href="/feed.xml">
+<!-- for Safari on iOS https://developer.apple.com/ios/human-interface-guidelines/icons-and-images/app-icon/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/logo/icon-180x180.png"><link rel="apple-touch-icon" sizes="167x167" href="/assets/images/logo/icon-167x167.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/logo/icon-152x152.png"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/logo/icon-120x120.png"><link rel="shortcut icon" href="/assets/images/logo/icon-120x120.png">
+<!-- for Chrome on Android https://developer.chrome.com/multidevice/android/installtohomescreen -->
+<meta name="mobile-web-app-capable" content="yes"><link rel="icon" sizes="192x192" href="/assets/images/logo/icon-192x192.png">
+<!-- for Edge on Windows 10 https://msdn.microsoft.com/en-us/library/dn255024(v=vs.85).aspx --><meta name="msapplication-TileImage" content="/assets/images/logo/icon-144x144.png"><meta name="msapplication-square310x310logo" content="/assets/images/logo/icon-310x310.png"><meta name="msapplication-wide310x150logo" content="/assets/images/logo/icon-310x150.png"><meta name="msapplication-square150x150logo" content="/assets/images/logo/icon-150x150.png"><meta name="msapplication-square70x70logo" content="/assets/images/logo/icon-70x70.png">
+<meta name="msapplication-TileColor" content="#eeeeee"><link rel="stylesheet" href="/assets/css/blog.css">
+    <style></style>
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="m-page-stage js-page-stage"><div class="m-page-content"><header class="m-page-header main clearfix"><a class="site-title" title="Personal blog to post experiments." href="/">Harry Kilian</a><nav>
+    <ul class="inline-list"><li><a href="/"></a></li><li><a href="/all.html"></a></li><li><a href="/about.html">About</a></li><li><a type="application/rss+xml" href="/feed.xml"></a></li>
+    </ul>
+  </nav>
+</header>
+<div class="m-page-main"><div class="m-post">
+	<div class="main js-main">
+		<div class="col-1">
+			<article itemscope itemtype="http://schema.org/BlogPosting">
+				<meta itemprop="mainEntityOfPage" itemscope itemType="https://schema.org/WebPage"/>
+				<header class="article-header"><h1 itemprop="headline" itemprop="name headline">Update 12: Terrain Generation Experiments</h1><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><time class="article-meta" datetime="2017-03-16T14:57:11+00:00"
+          itemprop="datePublished">2017-03-16 14:57:11 +0000
+        </time></div>
+  </div>
+</div>
+</header>
+				<div class="m-article-content js-article-content" itemprop="articleBody"><p>I talked before about the <a href="/procedural/progress/2017/03/14/update-11-world-generation-refactor.html">improved noise system</a>. I’ve been playing around and experimenting with different parameters, getting some interesting results. The difference between a real island and my fake video game island is that of scale. I want mountains, sweeping rivers, wildly different biomes, all on one island that spans maybe only 1.5 miles coast to coast. So it wouldn’t make sense for my islands to perfectly imitate the natural forming islands of earth. I wouldn’t say the terrain of the islands below look realistic, however these islands might not have even been created using the same tectonic processes. I’ve thought a bit about how far a fantasy world can really deviate from the real world. I think, that If the world looks like it was formed by some sort of natural process then it gets a pass. The real question is weather these maps are fun to play and build on. They definitely provide some nice variation across seeds with each map having some distinctive features.</p>
+
+<p><img src="/assets/terrain-gen-4-tiles.png" alt="4 different seeds" /></p>
+
+<h2 id="changing-lacunarity">Changing lacunarity</h2>
+<p>Below I’ve demonstrated the effect of changing lacunarity on an FBM noise which acts as an input to the frequency of a Ridged Multi noise. So thats one set of noise acting as an input on another noise. Lacunarity starts at 0.0 and increments by 0.1 to a final value of 2.5.</p>
+
+<p><img src="/assets/set1272-1.png" alt="Effect of changing lacunarity" /></p>
+
+<h2 id="changing-frequency">Changing frequency</h2>
+<p>Below you can see the effect of changing the frequency of the input noise.</p>
+
+<p><img src="/assets/set2416.png" alt="Effect of changing lacunarity" /></p>
+
+<p>The problem with this noise generation is that quite often I get a dud seed, especially when using noise of lower frequency. Sometimes an island will be very small, or overly large. I’m thinking of writing a function which discards maps based on total landmass, then keeps trying new maps until it finds a good fit. I would only need to sample the noise few times, maybe 200 samples, to get a reasonably accurate landmass approximation.</p>
+
+<h2 id="changing-intensity">Changing intensity</h2>
+<p>Below is the effect of changing intensity on the input noise. It starts as a sphere because there is a radial gradient subtracted from the noise to act as a falloff. With our input noise having 0 intensity it means that the main noise has a frequency of 0, the noise becomes just a flat color.</p>
+
+<p><img src="/assets/set4752.png" alt="Effect of changing lacunarity" /></p>
+
+<p><img src="/assets/set4216.png" alt="Effect of changing lacunarity" /></p>
+
+<p><img src="/assets/image-3496.png" alt="Effect of changing lacunarity" /></p>
+</div>
+				<footer><meta itemprop="dateModified" content="2017-03-16T14:57:11+00:00"></footer><section></section>
+					<section></section></article>
+		</div>
+		<div class="col-2">
+			<aside class="js-article-aside"><div class="m-toc js-toc"></div></aside>
+		</div>
+	</div>
+</div>
+
+<script src="//cdn.bootcss.com/toc/0.3.2/toc.min.js"></script>
+<script type="text/javascript">
+	window.throttle = function(func, wait) {
+	  var args, result, thisArg, timeoutId, lastCalled = 0;
+
+	  function trailingCall() {
+	    lastCalled = new Date;
+	    timeoutId = null;
+	    result = func.apply(thisArg, args);
+	  }
+	  return function() {
+	    var now = new Date,
+	      remaining = wait - (now - lastCalled);
+
+	    args = arguments;
+	    thisArg = this;
+
+	    if (remaining <= 0) {
+	      clearTimeout(timeoutId);
+	      timeoutId = null;
+	      lastCalled = now;
+	      result = func.apply(thisArg, args);
+	    } else if (!timeoutId) {
+	      timeoutId = setTimeout(trailingCall, remaining);
+	    }
+	    return result;
+	  };
+	}
+	$(function() {
+	  var $window = $(window);
+	  var $pageStage = $('.js-page-stage');
+	  var $pageMain = $('.js-main');
+	  var $pageFooter = $('.js-page-footer');
+	  var $articleContent = $('.js-article-content');
+	  var $articleAside = $('.js-article-aside');
+	  var $toc = $('.js-toc');
+	  var hasTitle = $articleContent.find('h1, h2, h3').length > 0;
+
+	  function asideSticky() {
+	    return $window.outerWidth() > 1150 && $pageStage.hasClass('has-toc');
+	  }
+
+	  function setTocClass() {
+	    if (hasTitle) {
+	      !$pageStage.hasClass('has-toc') && $pageStage.addClass('has-toc');
+	    }
+	  }
+
+	  setTocClass();
+
+	  function setAsideTOC() {
+	    var asideTop, asideLeft, scrollBottom, asideBottomTop, lastScrollTop;
+
+	    function init() {
+	      var asideOffset = $articleAside.offset();
+	      var footerOffset = $pageFooter.offset();
+	      var mainOffset = $pageMain.offset();
+	      asideTop = mainOffset.top;
+	      asideHeight = $toc.outerHeight() + parseInt($articleAside.css('padding-top'), 10) + parseInt($articleAside.css('padding-bottom'), 10);
+	      asideLeft = mainOffset.left + $pageMain.outerWidth() - $articleAside.outerWidth() - parseInt($pageMain.css('padding-right'), 10);
+	      scrollBottom = footerOffset.top - asideHeight;
+	      asideBottomTop = scrollBottom - mainOffset.top;
+	    }
+
+	    function setAside(force) {
+	      force !== true && (force = false);
+	      var scrollTop = $window.scrollTop();
+	      if (scrollTop >= asideTop && scrollTop <= scrollBottom) {
+	        (!force && lastScrollTop >= asideTop && lastScrollTop <= scrollBottom) ||
+	        $articleAside.addClass('fixed').css({
+	          left: asideLeft + 'px',
+	          top: 0
+	        });
+	      } else if (scrollTop < asideTop) {
+	        (!force && lastScrollTop < asideTop) ||
+	        $articleAside.removeClass('fixed').css({
+	          left: 0,
+	          top: 0
+	        });
+	      } else {
+	        (!force && lastScrollTop > scrollBottom) ||
+	        $articleAside.removeClass('fixed').css({
+	          left: 0,
+	          top: asideBottomTop + 'px'
+	        });
+	      }
+	      lastScrollTop = scrollTop;
+	    }
+	    asideSticky() && (init(), setAside());
+	    $window.on('scroll', function() {
+	      asideSticky() && setAside();
+	    });
+	    $window.on('resize', throttle(function() {
+	      setTocClass();
+	      asideSticky() && (init(), setAside(true));
+	    }, 100));
+	    setTimeout(init, 4000);
+	  }
+	  setTimeout(setAsideTOC, 1000);
+
+	  $toc.toc({
+	    'selectors': 'h1,h2,h3',
+	    'container': '.js-article-content',
+	  });
+	});
+</script></div>
+</div>
+</div><div class="m-page-footer js-page-footer">
+  <div class="main">
+    <aside><div class="follow-me"><ul class="inline-list" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="">
+    <link itemprop="url" href="/"></ul></div>
+</aside>
+    <footer class="site-info">
+      <p>© Harry Kilian </p>
+      <p>Powered by <a title="Jekyll is a simple, blog-aware, static site generator." href="http://jekyllrb.com/">Jekyll</a> & <a
+        title="TeXt is a succinct theme for blogging." href="https://github.com/kitian616/jekyll-TeXt-theme">TeXt Theme</a>.</p>
+    </footer>
+  </div>
+</div><script>
+      $(function() {
+        // display coding language
+        $(".highlight").each(function() {
+          $(this).attr("data-lang", $(this).find("code").attr("data-lang"));
+        });
+      });
+    </script></body>
+</html>

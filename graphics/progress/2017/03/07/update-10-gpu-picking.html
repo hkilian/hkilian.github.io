@@ -1,0 +1,194 @@
+<!DOCTYPE html><html lang="">
+  <head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Update 10: GPU Picking - Harry Kilian</title>
+<meta name="description" content="Urho3d has a nice method for picking objects by casting a ray through the scene octree. This works well enough for picking objects using their AABBs but it w...">
+<link rel="canonical" href="/graphics/progress/2017/03/07/update-10-gpu-picking.html"><link rel="alternate" type="application/rss+xml" title="Harry Kilian" href="/feed.xml">
+<!-- for Safari on iOS https://developer.apple.com/ios/human-interface-guidelines/icons-and-images/app-icon/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/logo/icon-180x180.png"><link rel="apple-touch-icon" sizes="167x167" href="/assets/images/logo/icon-167x167.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/logo/icon-152x152.png"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/logo/icon-120x120.png"><link rel="shortcut icon" href="/assets/images/logo/icon-120x120.png">
+<!-- for Chrome on Android https://developer.chrome.com/multidevice/android/installtohomescreen -->
+<meta name="mobile-web-app-capable" content="yes"><link rel="icon" sizes="192x192" href="/assets/images/logo/icon-192x192.png">
+<!-- for Edge on Windows 10 https://msdn.microsoft.com/en-us/library/dn255024(v=vs.85).aspx --><meta name="msapplication-TileImage" content="/assets/images/logo/icon-144x144.png"><meta name="msapplication-square310x310logo" content="/assets/images/logo/icon-310x310.png"><meta name="msapplication-wide310x150logo" content="/assets/images/logo/icon-310x150.png"><meta name="msapplication-square150x150logo" content="/assets/images/logo/icon-150x150.png"><meta name="msapplication-square70x70logo" content="/assets/images/logo/icon-70x70.png">
+<meta name="msapplication-TileColor" content="#eeeeee"><link rel="stylesheet" href="/assets/css/blog.css">
+    <style></style>
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="m-page-stage js-page-stage"><div class="m-page-content"><header class="m-page-header main clearfix"><a class="site-title" title="Personal blog to post experiments." href="/">Harry Kilian</a><nav>
+    <ul class="inline-list"><li><a href="/"></a></li><li><a href="/all.html"></a></li><li><a href="/about.html">About</a></li><li><a type="application/rss+xml" href="/feed.xml"></a></li>
+    </ul>
+  </nav>
+</header>
+<div class="m-page-main"><div class="m-post">
+	<div class="main js-main">
+		<div class="col-1">
+			<article itemscope itemtype="http://schema.org/BlogPosting">
+				<meta itemprop="mainEntityOfPage" itemscope itemType="https://schema.org/WebPage"/>
+				<header class="article-header"><h1 itemprop="headline" itemprop="name headline">Update 10: GPU Picking</h1><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><ul class="inline-list tag-wrapper"><li>
+          <a class="pill-button" href="/all.html?tag=opengl">opengl</a>
+        </li><li>
+          <a class="pill-button" href="/all.html?tag=programming">programming</a>
+        </li><li>
+          <a class="pill-button" href="/all.html?tag=terrain">terrain</a>
+        </li></ul><div class="other-wrapper"><div class="date-wrapper"><time class="article-meta" datetime="2017-03-07T15:38:57+00:00"
+          itemprop="datePublished">2017-03-07 15:38:57 +0000
+        </time></div>
+  </div>
+</div>
+</header>
+				<div class="m-article-content js-article-content" itemprop="articleBody"><p>Urho3d has a nice method for picking objects by casting a ray through the scene octree. This works well enough for picking objects using their AABBs but it was quite slow for picking points on a mesh. The issue now is that with the new terrain generation the mesh doesn’t even exist on the CPU, so it’s not possible now anyway. I thought about doing the picking on the GPU, and because,the world position for every point on screen has already been calculated for the positions buffer the work has pretty much been done already. Urho stores these buffers as textures, so I did a minor modification to the Urho3D internals and by binding the positions texture to a framebuffer I can do a glReadPixel() to get the value under the mouse cursor.</p>
+
+<p>The issue with glReadPixel is that it’s super slow on some hardware, my mac was taking 10ms to get that one singular pixel. This is where ‘pixel buffer objects’ come into play. Using a PBO the call to glReadPixel is non blocking, so it won’t halt the application. Instead of reading directly into client memory the function will read values into a buffer, which you can retrieve values from later. A common set up would be to have 2+ PBO’s initiated, then alternate between reading and writing them each frame. So the data you get would be from the PBO written to on a previous frame.</p>
+
+<p>Unfortunately my development machine is an older macbook pro and I was having real problems getting the glReadPixels to function asynchronously. Despite binding the PBO, when reading the pixels it would still halt the application. Despite lots and lots of testing I could see no solution to this, looks like a <a href="https://www.opengl.org/discussion_boards/showthread.php/176221-async-glReadPixels-on-HD3000-stalls-the-pipeline">bug </a>beyond my control. Very annoying, however I was able to gain some performance by placing the glReadPixel before the scene is rendered. The way opengl works is that it won’t read the pixels until every other opengl call has been executed. This was a large part of why it was so slow before. Also by using a 32bit float for the texture instead of 16 bit half float seemed to help as well. I was able to take the performance to under a millisecond, however it seems to spike randomly, taking 5 to 10ms every 10th frame or so. On better hardware with proper PBO support it shouldn’t be any issue.</p>
+
+<p>I’ve set up my shaders so they write an object ID into the alpha channel of the positions buffer. So figuring out the type of object under the mouse is easy. The idea is that I would use that ID to cull objects from a CPU side raycast.</p>
+
+<p>Here you can see the results, I am now able to use the mouse to draw onto the terrain in real time. Converting grass tiles into sand tiles.</p>
+
+<p><img src="/assets/screenshot_sun_mar__5_14_24_19_2017.png" alt="screenshot" /></p>
+
+<p><img src="/assets/screenshot_sun_mar__5_14_24_50_2017.png" alt="screenshot" /></p>
+
+<p><img src="/assets/screenshot_sun_mar__5_14_25_20_2017.png" alt="screenshot" /></p>
+
+<p>Here is some good reading on PBO’s:
+<a href="http://http.download.nvidia.com/developer/Papers/2005/Fast_Texture_Transfers/Fast_Texture_Transfers.pdf">http://http.download.nvidia.com/developer/Papers/2005/Fast_Texture_Transfers/Fast_Texture_Transfers.pdf</a>
+<a href="https://www.seas.upenn.edu/~pcozzi/OpenGLInsights/OpenGLInsights-AsynchronousBufferTransfers.pdf">https://www.seas.upenn.edu/~pcozzi/OpenGLInsights/OpenGLInsights-AsynchronousBufferTransfers.pdf</a></p>
+</div>
+				<footer><meta itemprop="dateModified" content="2017-03-07T15:38:57+00:00"></footer><section></section>
+					<section></section></article>
+		</div>
+		<div class="col-2">
+			<aside class="js-article-aside"><div class="m-toc js-toc"></div></aside>
+		</div>
+	</div>
+</div>
+
+<script src="//cdn.bootcss.com/toc/0.3.2/toc.min.js"></script>
+<script type="text/javascript">
+	window.throttle = function(func, wait) {
+	  var args, result, thisArg, timeoutId, lastCalled = 0;
+
+	  function trailingCall() {
+	    lastCalled = new Date;
+	    timeoutId = null;
+	    result = func.apply(thisArg, args);
+	  }
+	  return function() {
+	    var now = new Date,
+	      remaining = wait - (now - lastCalled);
+
+	    args = arguments;
+	    thisArg = this;
+
+	    if (remaining <= 0) {
+	      clearTimeout(timeoutId);
+	      timeoutId = null;
+	      lastCalled = now;
+	      result = func.apply(thisArg, args);
+	    } else if (!timeoutId) {
+	      timeoutId = setTimeout(trailingCall, remaining);
+	    }
+	    return result;
+	  };
+	}
+	$(function() {
+	  var $window = $(window);
+	  var $pageStage = $('.js-page-stage');
+	  var $pageMain = $('.js-main');
+	  var $pageFooter = $('.js-page-footer');
+	  var $articleContent = $('.js-article-content');
+	  var $articleAside = $('.js-article-aside');
+	  var $toc = $('.js-toc');
+	  var hasTitle = $articleContent.find('h1, h2, h3').length > 0;
+
+	  function asideSticky() {
+	    return $window.outerWidth() > 1150 && $pageStage.hasClass('has-toc');
+	  }
+
+	  function setTocClass() {
+	    if (hasTitle) {
+	      !$pageStage.hasClass('has-toc') && $pageStage.addClass('has-toc');
+	    }
+	  }
+
+	  setTocClass();
+
+	  function setAsideTOC() {
+	    var asideTop, asideLeft, scrollBottom, asideBottomTop, lastScrollTop;
+
+	    function init() {
+	      var asideOffset = $articleAside.offset();
+	      var footerOffset = $pageFooter.offset();
+	      var mainOffset = $pageMain.offset();
+	      asideTop = mainOffset.top;
+	      asideHeight = $toc.outerHeight() + parseInt($articleAside.css('padding-top'), 10) + parseInt($articleAside.css('padding-bottom'), 10);
+	      asideLeft = mainOffset.left + $pageMain.outerWidth() - $articleAside.outerWidth() - parseInt($pageMain.css('padding-right'), 10);
+	      scrollBottom = footerOffset.top - asideHeight;
+	      asideBottomTop = scrollBottom - mainOffset.top;
+	    }
+
+	    function setAside(force) {
+	      force !== true && (force = false);
+	      var scrollTop = $window.scrollTop();
+	      if (scrollTop >= asideTop && scrollTop <= scrollBottom) {
+	        (!force && lastScrollTop >= asideTop && lastScrollTop <= scrollBottom) ||
+	        $articleAside.addClass('fixed').css({
+	          left: asideLeft + 'px',
+	          top: 0
+	        });
+	      } else if (scrollTop < asideTop) {
+	        (!force && lastScrollTop < asideTop) ||
+	        $articleAside.removeClass('fixed').css({
+	          left: 0,
+	          top: 0
+	        });
+	      } else {
+	        (!force && lastScrollTop > scrollBottom) ||
+	        $articleAside.removeClass('fixed').css({
+	          left: 0,
+	          top: asideBottomTop + 'px'
+	        });
+	      }
+	      lastScrollTop = scrollTop;
+	    }
+	    asideSticky() && (init(), setAside());
+	    $window.on('scroll', function() {
+	      asideSticky() && setAside();
+	    });
+	    $window.on('resize', throttle(function() {
+	      setTocClass();
+	      asideSticky() && (init(), setAside(true));
+	    }, 100));
+	    setTimeout(init, 4000);
+	  }
+	  setTimeout(setAsideTOC, 1000);
+
+	  $toc.toc({
+	    'selectors': 'h1,h2,h3',
+	    'container': '.js-article-content',
+	  });
+	});
+</script></div>
+</div>
+</div><div class="m-page-footer js-page-footer">
+  <div class="main">
+    <aside><div class="follow-me"><ul class="inline-list" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="">
+    <link itemprop="url" href="/"></ul></div>
+</aside>
+    <footer class="site-info">
+      <p>© Harry Kilian </p>
+      <p>Powered by <a title="Jekyll is a simple, blog-aware, static site generator." href="http://jekyllrb.com/">Jekyll</a> & <a
+        title="TeXt is a succinct theme for blogging." href="https://github.com/kitian616/jekyll-TeXt-theme">TeXt Theme</a>.</p>
+    </footer>
+  </div>
+</div><script>
+      $(function() {
+        // display coding language
+        $(".highlight").each(function() {
+          $(this).attr("data-lang", $(this).find("code").attr("data-lang"));
+        });
+      });
+    </script></body>
+</html>
