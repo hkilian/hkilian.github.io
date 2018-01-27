@@ -43,11 +43,16 @@ I had to go through and fix them up, and in the end I just opted to make .markdo
 
 <p>Overall I’m pretty excited to start blogging again. I’m hoping to embed some cool graphics experiments in the blog and play around with demoing some c++ with emscripten.</p>
 
-<h3 id="update">Update:</h3>
+<h3 id="update">Update</h3>
 
 <p>I have since learnt that github pages only supports a very limited number of jekyll plugins. Not only that but the error reporting for failed builds is not so great. 
 Took quite a bit of searching around before I realised that a youtube plug-in was causing the build work fine locally but fail on github.
 A solution is to build all the files locally with the needed plugins and then just send output .html files to the remote repo.</p>
+
+<h3 id="update-2">Update 2</h3>
+
+<p>I’ve now got the site working with my jekyll plugins. The solution was to have 2 git repos. One which had the jekyll markdown files and another which only has the html output 
+from jekyll. Basically I build the site myself and send just the html files to github.</p>
 </div>
 				<footer><meta itemprop="dateModified" content="2018-01-26T21:18:37+00:00"></footer><section></section>
 					<section></section></article>
