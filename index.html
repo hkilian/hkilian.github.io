@@ -1,218 +1,391 @@
-<!DOCTYPE html><html lang="">
+<!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Harry Kilian</title>
-<meta name="description" content="Personal blog to post experiments.">
-<link rel="canonical" href="/"><link rel="alternate" type="application/rss+xml" title="Harry Kilian" href="/feed.xml">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Blog - Harry Kilian</title>
+<meta name="description" content="Personal blog to post experiments.
+">
+<link rel="canonical" href="http://localhost:4000/"><link rel="alternate" type="application/rss+xml" title="Harry Kilian" href="http://localhost:4000/feed.xml">
 <!-- for Safari on iOS https://developer.apple.com/ios/human-interface-guidelines/icons-and-images/app-icon/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/logo/icon-180x180.png"><link rel="apple-touch-icon" sizes="167x167" href="/assets/images/logo/icon-167x167.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/logo/icon-152x152.png"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/logo/icon-120x120.png"><link rel="shortcut icon" href="/assets/images/logo/icon-120x120.png">
 <!-- for Chrome on Android https://developer.chrome.com/multidevice/android/installtohomescreen -->
 <meta name="mobile-web-app-capable" content="yes"><link rel="icon" sizes="192x192" href="/assets/images/logo/icon-192x192.png">
 <!-- for Edge on Windows 10 https://msdn.microsoft.com/en-us/library/dn255024(v=vs.85).aspx --><meta name="msapplication-TileImage" content="/assets/images/logo/icon-144x144.png"><meta name="msapplication-square310x310logo" content="/assets/images/logo/icon-310x310.png"><meta name="msapplication-wide310x150logo" content="/assets/images/logo/icon-310x150.png"><meta name="msapplication-square150x150logo" content="/assets/images/logo/icon-150x150.png"><meta name="msapplication-square70x70logo" content="/assets/images/logo/icon-70x70.png">
-<meta name="msapplication-TileColor" content="#eeeeee"><link rel="stylesheet" href="/assets/css/blog.css">
-    <style></style>
-    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<meta name="msapplication-TileColor" content="#eeeeee">
+<link rel="stylesheet" href="/assets/css/blog.css">
+    <script>(function() {
+  window.isArray = function(val) {
+    return Object.prototype.toString.call(val) === '[object Array]';
+  };
+  window.isString = function(val) {
+    return typeof val === 'string';
+  };
+
+  window.decodeUrl = function(str) {
+    return str ? decodeURIComponent(str.replace(/\+/g, '%20')) : '';
+  };
+
+  window.hasEvent = function(event) {
+    return 'on'.concat(event) in window.document;
+  };
+
+  window.pageLoad = (function () {
+    var loaded = false, cbs = [];
+    window.addEventListener('load', function () {
+      var i, cb; loaded = true;
+      if (cbs.length > 0) {
+        for (i = 0; i < cbs.length; i++) {
+          cb = cbs[i]; cb();
+        }
+      }
+    });
+    return {
+      then: function(cb) {
+        cb && (loaded ? cb() : (cbs.push(cb)));
+      }
+    };
+  })();
+})();(function() {
+  window.throttle = function(func, wait) {
+    var args, result, thisArg, timeoutId, lastCalled = 0;
+
+    function trailingCall() {
+      lastCalled = new Date;
+      timeoutId = null;
+      result = func.apply(thisArg, args);
+    }
+    return function() {
+      var now = new Date,
+        remaining = wait - (now - lastCalled);
+
+      args = arguments;
+      thisArg = this;
+
+      if (remaining <= 0) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+        lastCalled = now;
+        result = func.apply(thisArg, args);
+      } else if (!timeoutId) {
+        timeoutId = setTimeout(trailingCall, remaining);
+      }
+      return result;
+    };
+  };
+})();(function() {
+  var Set = (function() {
+    var add = function(item) {
+      var i, data = this._data;
+      for (i = 0; i < data.length; i++) {
+        if (data[i] === item) {
+          return;
+        }
+      }
+      this.size ++;
+      data.push(item);
+      return data;
+    };
+
+    var Set = function(data) {
+      this.size = 0;
+      this._data = [];
+      var i;
+      if (data.length > 0) {
+        for (i = 0; i < data.length; i++) {
+          add.call(this, data[i]);
+        }
+      }
+    };
+    Set.prototype.add = add;
+    Set.prototype.get = function(index) { return this._data[index]; };
+    Set.prototype.has = function(item) {
+      var i, data = this._data;
+      for (i = 0; i < data.length; i++) {
+        if (this.get(i) === item) {
+          return true;
+        }
+      }
+      return false;
+    };
+    Set.prototype.is = function(map) {
+      if (map._data.length !== this._data.length) { return false; }
+      var i, j, flag, tData = this._data, mData = map._data;
+      for (i = 0; i < tData.length; i++) {
+        for (flag = false, j = 0; j < mData.length; j++) {
+          if (tData[i] === mData[j]) {
+            flag = true;
+            break;
+          }
+        }
+        if (!flag) { return false; }
+      }
+      return true;
+    };
+    Set.prototype.values = function() {
+      return this._data;
+    };
+    return Set;
+  })();
+
+  window.Lazyload = (function(doc) {
+    var queue = {js: [], css: []}, sources = {js: {}, css: {}}, context = this;
+    var createNode = function(name, attrs) {
+      var node = doc.createElement(name), attr;
+      for (attr in attrs) {
+        if (attrs.hasOwnProperty(attr)) {
+          node.setAttribute(attr, attrs[attr]);
+        }
+      }
+      return node;
+    };
+    var end = function(type, url) {
+      var s, q, qi, cbs, i, j, cur, val, flag;
+      if (type === 'js' || type ==='css') {
+        s = sources[type], q = queue[type];
+        s[url] = true;
+        for (i = 0; i < q.length; i++) {
+          cur = q[i];
+          if (cur.urls.has(url)) {
+            qi = cur, val = qi.urls.values();
+            qi && (cbs = qi.callbacks);
+            for (flag = true, j = 0; j < val.length; j++) {
+              cur = val[j];
+              if (!s[cur]) {
+                flag = false;
+              }
+            }
+            if (flag && cbs && cbs.length > 0) {
+              for (j = 0; j < cbs.length; j++) {
+                cbs[j].call(context);
+              }
+              qi.load = true;
+            }
+          }
+        }
+      }
+    };
+    var load = function(type, urls, callback) {
+      var s, q, qi, node, i, cur,
+        _urls = typeof urls === 'string' ? new Set([urls]) : new Set(urls), val, url;
+      if (type === 'js' || type ==='css') {
+        s = sources[type], q = queue[type];
+        for (i = 0; i < q.length; i++) {
+          cur = q[i];
+          if (_urls.is(cur.urls)) {
+            qi = cur;
+            break;
+          }
+        }
+        val = _urls.values();
+        if (qi) {
+          callback && (qi.load || qi.callbacks.push(callback));
+          callback && (qi.load && callback());
+        } else {
+          q.push({
+            urls: _urls,
+            callbacks: callback ? [callback] : [],
+            load: false
+          });
+          for (i = 0; i < val.length; i++) {
+            node = null, url = val[i];
+            if (s[url] === undefined) {
+              (type === 'js' ) && (node = createNode('script', { src: url }));
+              (type === 'css') && (node = createNode('link', { rel: 'stylesheet', href: url }));
+              if (node) {
+                node.onload = (function(type, url) {
+                  return function() {
+                    end(type, url);
+                  };
+                })(type, url);
+                (doc.head || doc.body).appendChild(node);
+                s[url] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+    return {
+      js: function(url, callback) {
+        load('js', url, callback);
+      },
+      css: function(url, callback) {
+        load('css', url, callback);
+      }
+    };
+  })(this.document);
+})();</script>
   </head>
   <body>
-    <div class="m-page-stage js-page-stage"><div class="m-page-content"><header class="m-page-header main clearfix"><a class="site-title" title="Personal blog to post experiments." href="/">Harry Kilian</a><nav>
-    <ul class="inline-list"><li><a href="/"></a></li><li><a href="/all.html"></a></li><li><a href="/about.html">About</a></li><li><a type="application/rss+xml" href="/feed.xml"></a></li>
-    </ul>
-  </nav>
+    <div class="m-page-stage js-page-stage">
+      <div class="m-page-content"><header class="m-page-header">
+  <div class="main clearfix">
+    <div class='site-logo'><a title="Personal blog to post experiments.
+" href="/">Harry Kilian</a></div>
+    <nav>
+      <ul><li><a href="/projects.html">Projects</a></li><li><a href="/about.html">About</a></li><li><a href="/all.html">All</a></li>
+
+      </ul>
+    </nav>
+  </div>
 </header>
 <div class="m-page-main"><div class="m-home">
   <div class="main">
-    <div class="m-post-list">
-      
-        <article><h1><a href="/jekyll/2018/01/26/From-wordpress-to-Jekyll.html">From Wordpress to Jekyll</a></h1>
+    <div class="m-post-list"><article><h1><a href="/jekyll/2018/01/27/From-wordpress-to-Jekyll.html">From Wordpress to Jekyll</a></h1>
           <div class="m-article-content">Decided to move the blog from wordpress.com managed hosting over to github.io pages using the jekyll static site generator.
 My primary motivation was that I want to be able to embed any content on the blog, perhaps some canvas/opengl stuff in the future.
-I could have gone the self-hosted wordpress route but of course you have to pay a hosting fe...</div><a href="/jekyll/2018/01/26/From-wordpress-to-Jekyll.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2018-01-26 21:18:37 +0000</span></div>
+I could have gone the self-hosted wordpress route but of course you have to pay a hosting fe...</div><a href="/jekyll/2018/01/27/From-wordpress-to-Jekyll.html">Click to read more ...</a><div class="m-article-info clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="Harry Kilian"/></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">Jan 27, 2018</span></div>
   </div>
 </div>
-</article>
-        <article><h1><a href="/progress/2017/05/31/progress-17-volumes-cpu-picking2.html">Progress 17: Depth, Volumes and CPU Picking</a></h1>
+</article><article><h1><a href="/progress/2017/05/31/progress-17-volumes-cpu-picking2.html">Progress 17: Depth, Volumes and CPU Picking</a></h1>
           <div class="m-article-content">Landscape Depth
 The landscape now has information in the Y axis(downward), as you dig the tiles change from soil to stone to granite. It’s kept quite simple at the moment but later I want to add further noise manipulation into the algorithm so that the player can find pockets of different types of rock as they dig.
 
-</div><a href="/progress/2017/05/31/progress-17-volumes-cpu-picking2.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-05-31 07:34:53 +0100</span></div>
+
+
+Excavation Tool
+I made some...</div><a href="/progress/2017/05/31/progress-17-volumes-cpu-picking2.html">Click to read more ...</a><div class="m-article-info clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="Harry Kilian"/></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">May 31, 2017</span></div>
   </div>
 </div>
-</article>
-        <article><h1><a href="/graphics/progress/2017/05/20/update-16-ao-and-perspective-cameras.html">Update 16: AO, Trees and the Perspective Camera</a></h1>
+</article><article><h1><a href="/graphics/progress/2017/05/20/update-16-ao-and-perspective-cameras.html">Update 16: AO, Trees and the Perspective Camera</a></h1>
           <div class="m-article-content">Orthographic vs Perspective
-Up until now I’ve had the game camera set up as an orthographic projection. Which gives a similar style to an isometric game but in 3D. I went for this initially because I wanted it to be reminiscent of games like Age Of Empires and RCT. It wasn’t until I started working on the construction tools that I realised how i...</div><a href="/graphics/progress/2017/05/20/update-16-ao-and-perspective-cameras.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-05-20 12:52:47 +0100</span></div>
+Up until now I’ve had the game camera set up as an orthographic projection. Which gives a similar style to an isometric game but in 3D. I went for this initially because I wanted it to be reminiscent of games like Age Of Empires and RCT. It wasn’t until I started working on the construction tools that I realised how i...</div><a href="/graphics/progress/2017/05/20/update-16-ao-and-perspective-cameras.html">Click to read more ...</a><div class="m-article-info clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="Harry Kilian"/></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">May 20, 2017</span></div>
   </div>
 </div>
-</article>
-        <article><h1><a href="/graphics/progress/2017/05/10/update-15-ao-experiments.html">Update 15: SSAO Experiments</a></h1>
+</article><article><h1><a href="/graphics/progress/2017/05/11/update-15-ao-experiments.html">Update 15: SSAO Experiments</a></h1>
           <div class="m-article-content">Screen Space Ambient Occlusion
 
-</div><a href="/graphics/progress/2017/05/10/update-15-ao-experiments.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-05-10 19:09:04 +0100</span></div>
+Small update this time. I have started working a day job again and so haven’t spent much time on the game. For a bit of fun I’ve been thinking about implementing screen space ambient occlusion, something I haven’t written before. As I’ve been developing and experimenting with the game I’ve noticed issues with my e...</div><a href="/graphics/progress/2017/05/11/update-15-ao-experiments.html">Click to read more ...</a><div class="m-article-info clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="Harry Kilian"/></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">May 11, 2017</span></div>
   </div>
 </div>
-</article>
-        <article><h1><a href="/graphics/progress/2017/04/30/update-14-minor-improvements.html">Update 14: Minor Improvements</a></h1>
+</article><article><h1><a href="/graphics/progress/2017/04/30/update-14-minor-improvements.html">Update 14: Minor Improvements</a></h1>
           <div class="m-article-content">Nothing too major this update, I’ve been working on some other personal things the last month so I haven’t done anything major on the game.
 
-</div><a href="/graphics/progress/2017/04/30/update-14-minor-improvements.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-04-30 08:52:38 +0100</span></div>
+Updates
+
+  Made it so an individual tile will highlight when hovered over with the mouse.
+  You can now make square box selections with the mouse by clicking and dragging.
+  Added a distance fog for when us...</div><a href="/graphics/progress/2017/04/30/update-14-minor-improvements.html">Click to read more ...</a><div class="m-article-info clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="Harry Kilian"/></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">Apr 30, 2017</span></div>
   </div>
 </div>
-</article>
-        <article><h1><a href="/graphics/procedural/progress/2017/04/29/update-12-simple-rivers.html">Update 13: Simple Rivers</a></h1>
-          <div class="m-article-content">For me, one of the most important parts of the world generation has to be the rivers. I feel like I rarely see genuine flowing rivers in games, especially not procedurally generated ones. Minecraft and NoMansSky have ‘rivers’ but they don’t really follow any logic, they don’t really flow, and have no clear end and start. This is because the worl...</div><a href="/graphics/procedural/progress/2017/04/29/update-12-simple-rivers.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><ul class="inline-list tag-wrapper"><li>
+</article><article><h1><a href="/graphics/procedural/progress/2017/04/29/update-12-simple-rivers.html">Update 13: Simple Rivers</a></h1>
+          <div class="m-article-content">For me, one of the most important parts of the world generation has to be the rivers. I feel like I rarely see genuine flowing rivers in games, especially not procedurally generated ones. Minecraft and NoMansSky have ‘rivers’ but they don’t really follow any logic, they don’t really flow, and have no clear end and start. This is because the worl...</div><a href="/graphics/procedural/progress/2017/04/29/update-12-simple-rivers.html">Click to read more ...</a><div class="m-article-info clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="Harry Kilian"/></meta><ul class="tag-wrapper"><li>
           <a class="pill-button" href="/all.html?tag=rivers">rivers</a>
         </li><li>
           <a class="pill-button" href="/all.html?tag=simulation">simulation</a>
         </li><li>
           <a class="pill-button" href="/all.html?tag=water">water</a>
-        </li></ul><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-04-29 12:11:28 +0100</span></div>
+        </li></ul><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">Apr 29, 2017</span></div>
   </div>
 </div>
-</article>
-        <article><h1><a href="/graphics/procedural/progress/2017/03/16/update-12-terrain-generation-experiments.html">Update 12: Terrain Generation Experiments</a></h1>
-          <div class="m-article-content">I talked before about the improved noise system. I’ve been playing around and experimenting with different parameters, getting some interesting results. The difference between a real island and my fake video game island is that of scale. I want mountains, sweeping rivers, wildly different biomes, all on one island that spans maybe only 1.5 miles...</div><a href="/graphics/procedural/progress/2017/03/16/update-12-terrain-generation-experiments.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-03-16 14:57:11 +0000</span></div>
+</article><article><h1><a href="/graphics/procedural/progress/2017/03/16/update-12-terrain-generation-experiments.html">Update 12: Terrain Generation Experiments</a></h1>
+          <div class="m-article-content">I talked before about the improved noise system. I’ve been playing around and experimenting with different parameters, getting some interesting results. The difference between a real island and my fake video game island is that of scale. I want mountains, sweeping rivers, wildly different biomes, all on one island that spans maybe only 1.5 miles...</div><a href="/graphics/procedural/progress/2017/03/16/update-12-terrain-generation-experiments.html">Click to read more ...</a><div class="m-article-info clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="Harry Kilian"/></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">Mar 16, 2017</span></div>
   </div>
 </div>
-</article>
-        <article><h1><a href="/procedural/progress/2017/03/14/update-11-world-generation-refactor.html">Update 11: World Generation Refactor</a></h1>
-          <div class="m-article-content">I’ve spent some time refactoring the world generation and building a useful world generation editor. I think having an actual visual interface to preview the generation in real time will be massively useful. Before, I would make changes to the algorithm in c++, then have to wait while it compiles and launches to see the changes. This is obviousl...</div><a href="/procedural/progress/2017/03/14/update-11-world-generation-refactor.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-03-14 14:31:26 +0000</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/graphics/procedural/2017/03/07/procedural-planets.html">Procedural Planets</a></h1>
-          <div class="m-article-content">I put together a little planet generator a few months ago, thought I would share. The generation is based on several parameters like temperature(distance to sun), size, population etc… then it churns out these neat little pixel art planets. Pretty simple but a cool result, this was done in Unity3D.
-
-</div><a href="/graphics/procedural/2017/03/07/procedural-planets.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-03-07 17:35:15 +0000</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/graphics/progress/2017/03/07/update-10-gpu-picking.html">Update 10: GPU Picking</a></h1>
-          <div class="m-article-content">Urho3d has a nice method for picking objects by casting a ray through the scene octree. This works well enough for picking objects using their AABBs but it was quite slow for picking points on a mesh. The issue now is that with the new terrain generation the mesh doesn’t even exist on the CPU, so it’s not possible now anyway. I thought about doi...</div><a href="/graphics/progress/2017/03/07/update-10-gpu-picking.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><ul class="inline-list tag-wrapper"><li>
-          <a class="pill-button" href="/all.html?tag=opengl">opengl</a>
-        </li><li>
-          <a class="pill-button" href="/all.html?tag=programming">programming</a>
-        </li><li>
-          <a class="pill-button" href="/all.html?tag=terrain">terrain</a>
-        </li></ul><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-03-07 15:38:57 +0000</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/graphics/progress/2017/02/28/update-9-terrain-lod-and-the-gpu.html">Update 9: Terrain LOD and the GPU</a></h1>
-          <div class="m-article-content">Previously the mesh for the terrain was generated on the CPU, both positions and normals. While this ‘worked’, it was extremely slow. So slow in fact, that it required the process to be split across multiple frames, usually it would take upward of 50 frames for one chunk to be ready on screen. Usually there are 9 chunks needed, so if the player ...</div><a href="/graphics/progress/2017/02/28/update-9-terrain-lod-and-the-gpu.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-02-28 20:12:21 +0000</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/graphics/misc/2017/02/24/happy-meshing-accidents.html">Happy Meshing Accidents</a></h1>
-          <div class="m-article-content">While trying to write the code to generate a mesh for the terrain I hit a few bugs which distorted the mesh vertices in all kinds of weird ways. I played around with it and got some interesting looking images.
-
-</div><a href="/graphics/misc/2017/02/24/happy-meshing-accidents.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-02-24 18:23:36 +0000</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/drones/misc/2017/02/24/cape-com-drone-flight-beta.html">Cape.com Drone Flight Beta</a></h1>
-          <div class="m-article-content">I got invited into the cape.com drone flight beta. This technology involved is very cool. Basically you can remotely fly real drones from your laptop or phone anywhere in the world. You can select 1 of 7 locations in North America to launch the drone, and you can fly around for roughly 5 minutes or so. It’s free for the beta, I imagine you can f...</div><a href="/drones/misc/2017/02/24/cape-com-drone-flight-beta.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><ul class="inline-list tag-wrapper"><li>
-          <a class="pill-button" href="/all.html?tag=cape.com">cape.com</a>
-        </li><li>
-          <a class="pill-button" href="/all.html?tag=tech">tech</a>
-        </li></ul><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-02-24 13:18:02 +0000</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/graphics/progress/2017/02/17/update-8-grass-rendering.html">Update 8: Grass Rendering</a></h1>
-          <div class="m-article-content">I started some experiments with parallax mapped grass, they didn’t turn out to successful. With parallax mapping the grass can not extend out onto other geometry which made it look pretty dull. Next idea was to use shell rendering, this is an age old method used for realtime fur. ‘Shadow of the Colossus’ used it well on the ps2. But it still see...</div><a href="/graphics/progress/2017/02/17/update-8-grass-rendering.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><ul class="inline-list tag-wrapper"><li>
-          <a class="pill-button" href="/all.html?tag=glsl">glsl</a>
-        </li><li>
-          <a class="pill-button" href="/all.html?tag=grass">grass</a>
-        </li><li>
-          <a class="pill-button" href="/all.html?tag=opengl">opengl</a>
-        </li></ul><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-02-17 14:31:01 +0000</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/graphics/progress/2017/02/16/update-7-fixed-camera-rendering.html">Update 7: Fixed Camera Rendering</a></h1>
-          <div class="m-article-content">I’ve had this idea for a fixed camera rendering system in the back of my mind for a little while. I thought I would put together a proof of concept. Basically the idea is that the world can only be viewed in isometric and top down oblique perspective, but the game is still a fully 3d world. The idea spawned when I was watching this video by Roll...</div><a href="/graphics/progress/2017/02/16/update-7-fixed-camera-rendering.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-02-16 16:27:45 +0000</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/progress/2017/01/11/progress-update-6.html">Progress Update 6</a></h1>
-          <div class="m-article-content">Entity Component System
-I’ve started building an ECS, specifically to manage the large amount of game units. The technical design of the game units would indeed fit in a deep class hierarchy, however I don’t believe this system will give me the flexibility or speed that I need. I took a glance at different c++ ECS libraries like EntityX, but non...</div><a href="/progress/2017/01/11/progress-update-6.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-01-11 16:36:13 +0000</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/graphics/2017/01/10/low-resolution-rendering.html">Low Resolution Rendering</a></h1>
-          <div class="m-article-content">I did some experimenting with low resolution rendering of the game. Essentially I rendered the the scene to a texture and half or quarter resolution then scaled it back up to full size using nearest neighbour filtering.
-
-</div><a href="/graphics/2017/01/10/low-resolution-rendering.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-01-10 10:50:35 +0000</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/progress/2017/01/04/progress-update-5.html">Progress Update 5</a></h1>
-          <div class="m-article-content">Art direction
-Ive been playing around with the terrain shaders. I imagined the game having some form of pixel art, but still being a fully 3D world. Up until this point I’ve just been running generic default shaders with a sprite map from ripped from Minecraft. When I get round to creating the art assets for trees, players etc then I will settle...</div><a href="/progress/2017/01/04/progress-update-5.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2017-01-04 20:24:26 +0000</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/progress/2016/12/30/progress-update-4.html">Progress Update 4</a></h1>
-          <div class="m-article-content">I’ve made some decent progress over the last week or so. Working mainly on the world meshing and some dev tools. Urho3D has an editor built in but it’s very basic and quite ugly, also it’s written in Angelscript which I have little experience in. Rather than attempt to modify it I’m going to built some custom tools.&lt;/p&gt;
-
-</div><a href="/progress/2016/12/30/progress-update-4.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2016-12-30 16:50:01 +0000</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/progress/2016/12/18/progress-update-3.html">Progress Update 3</a></h1>
-          <div class="m-article-content">Long time since the last update, the whole project has undergone some major changes. Very little of the code I had written as of the last update remains. I have made the decision to use an game engine, Urho3D. After a lot of thought it’s clear that if this game has any chance of existing complete then I need to do everything I can to speed up de...</div><a href="/progress/2016/12/18/progress-update-3.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2016-12-18 17:17:02 +0000</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/progress/2016/11/02/progress-update-2.html">Progress Update 2</a></h1>
-          <div class="m-article-content">Still laying down the groundwork, little to show in terms of visuals at this point.
-
-</div><a href="/progress/2016/11/02/progress-update-2.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><ul class="inline-list tag-wrapper"><li>
-          <a class="pill-button" href="/all.html?tag=programming">programming</a>
-        </li></ul><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2016-11-02 16:07:50 +0000</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/progress/2016/10/06/progress-update-1.html">Progress Update 1</a></h1>
-          <div class="m-article-content">So this is the first progress update. Bare in mind this is very early on, most time has been spent on laying down some engine foundations and working on a method for procedurally generated island terrain.
-
-</div><a href="/progress/2016/10/06/progress-update-1.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2016-10-06 20:17:37 +0100</span></div>
-  </div>
-</div>
-</article>
-        <article><h1><a href="/misc/2014/04/28/plotclock.html">Plotclock</a></h1>
-          <div class="m-article-content">Due to my recent interest in drawing robots I went and lasercut the parts for a plotclock. You can find the files and instructions on thingiverse
-
-</div><a href="/misc/2014/04/28/plotclock.html"></a><div class="m-article-data clearfix"><meta itemprop="author" itemscope itemtype="https://schema.org/Person"></meta><ul class="inline-list tag-wrapper"><li>
-          <a class="pill-button" href="/all.html?tag=lasercut">lasercut</a>
-        </li><li>
-          <a class="pill-button" href="/all.html?tag=robot">robot</a>
-        </li><li>
-          <a class="pill-button" href="/all.html?tag=thingiverse">thingiverse</a>
-        </li></ul><div class="other-wrapper"><div class="date-wrapper"><span class="article-meta">2014-04-28 20:28:25 +0100</span></div>
-  </div>
-</div>
-</article></div></div>
+</article></div><nav class="m-pagination"><p>23 post articles, 4 pages.</p>
+          <ul><li><div class="round-button inactive">
+                <div class="icon icon--prrevious"><svg fill="#000000" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+</svg>
 </div></div>
+              </li><li>
+                  <div class="round-button cur"><span>1</span></div>
+                </li><li>
+                    <a class="round-button" href="/page2"><span>2</span></a>
+                  </li><li>
+                    <a class="round-button" href="/page3"><span>3</span></a>
+                  </li><li>
+                    <a class="round-button" href="/page4"><span>4</span></a>
+                  </li><li>
+                <a class="round-button" href="/page2">
+                  <div class="icon icon--next"><svg fill="#000000" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+</svg>
 </div>
-</div><div class="m-page-footer js-page-footer">
+                </a>
+              </li></ul>
+        </nav></div>
+</div>
+</div>
+      </div>
+    </div><div class="m-page-footer js-page-footer">
   <div class="main">
-    <aside><div class="follow-me"><ul class="inline-list" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="">
-    <link itemprop="url" href="/"></ul></div>
+    <aside><div class="follow-me">
+  <ul itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Harry Kilian"><link itemprop="url" href="http://localhost:4000/"><li title="Follow me on Twitter.">
+        <a class="floating-action-round-button twitter" itemprop="sameAs" href="https://twitter.com/gooses_" target="_blank">
+          <div class="icon"><svg fill="#000000" width="24px" height="24px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M1024.032 194.432c-37.664 16.704-78.176 28-120.672 33.088 43.36-26.016 76.672-67.168 92.384-116.224-40.608 24.064-85.568 41.568-133.408 50.976-38.336-40.832-92.928-66.336-153.344-66.336-116.032 0-210.08 94.048-210.08 210.08 0 16.48 1.856 32.512 5.44 47.872-174.592-8.768-329.408-92.416-433.024-219.52-18.08 31.04-28.448 67.104-28.448 105.632 0 72.896 37.088 137.184 93.472 174.88-34.432-1.088-66.816-10.528-95.168-26.272-0.032 0.864-0.032 1.76-0.032 2.656 0 101.792 72.416 186.688 168.512 205.984-17.632 4.8-36.192 7.36-55.36 7.36-13.536 0-26.688-1.312-39.52-3.776 26.72 83.456 104.32 144.192 196.256 145.888-71.904 56.352-162.496 89.92-260.928 89.92-16.96 0-33.664-0.992-50.112-2.944 92.96 59.616 203.392 94.4 322.048 94.4 386.432 0 597.728-320.128 597.728-597.76 0-9.12-0.192-18.176-0.608-27.168 41.056-29.632 76.672-66.624 104.832-108.736z" />
+</svg>
+</div>
+        </a>
+      </li><li title="Follow me on Github.">
+        <a class="floating-action-round-button github" itemprop="sameAs" href="https://github.com/hkilian" target="_blank">
+          <div class="icon"><svg fill="#000000" width="24px" height="24px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path class="svgpath" data-index="path_0" fill="#272636" d="M0 525.2c0 223.6 143.3 413.7 343 483.5 26.9 6.8 22.8-12.4 22.8-25.4l0-88.7c-155.3 18.2-161.5-84.6-172-101.7-21.1-36-70.8-45.2-56-62.3 35.4-18.2 71.4 4.6 113.1 66.3 30.2 44.7 89.1 37.2 119 29.7 6.5-26.9 20.5-50.9 39.7-69.6C248.8 728.2 181.7 630 181.7 513.2c0-56.6 18.7-108.7 55.3-150.7-23.3-69.3 2.2-128.5 5.6-137.3 66.5-6 135.5 47.6 140.9 51.8 37.8-10.2 80.9-15.6 129.1-15.6 48.5 0 91.8 5.6 129.8 15.9 12.9-9.8 77-55.8 138.8-50.2 3.3 8.8 28.2 66.7 6.3 135 37.1 42.1 56 94.6 56 151.4 0 117-67.5 215.3-228.8 243.7 26.9 26.6 43.6 63.4 43.6 104.2l0 128.8c0.9 10.3 0 20.5 17.2 20.5C878.1 942.4 1024 750.9 1024 525.3c0-282.9-229.3-512-512-512C229.1 13.2 0 242.3 0 525.2L0 525.2z" />
+</svg>
+</div>
+        </a>
+      </li><li title="Follow me on Linkedin.">
+        <a class="floating-action-round-button linkedin" itemprop="sameAs" href="https://www.linkedin.com/in/harry-kilian-9b000930" target="_blank">
+          <div class="icon"><svg fill="#000000" width="24px" height="24px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M260.096 155.648c0 27.307008-9.899008 50.516992-29.696 69.632-19.796992 19.115008-45.396992 28.672-76.8 28.672-30.036992 0-54.612992-9.556992-73.728-28.672-19.115008-19.115008-28.672-42.324992-28.672-69.632 0-28.672 9.556992-52.224 28.672-70.656 19.115008-18.432 44.372992-27.648 75.776-27.648 31.403008 0 56.32 9.216 74.752 27.648 18.432 18.432 28.331008 41.984 29.696 70.656 0 0 0 0 0 0m-202.752 808.96c0 0 0-632.832 0-632.832 0 0 196.608 0 196.608 0 0 0 0 632.832 0 632.832 0 0-196.608 0-196.608 0 0 0 0 0 0 0m313.344-430.08c0-58.708992-1.364992-126.292992-4.096-202.752 0 0 169.984 0 169.984 0 0 0 10.24 88.064 10.24 88.064 0 0 4.096 0 4.096 0 40.96-68.267008 105.812992-102.4 194.56-102.4 68.267008 0 123.220992 22.868992 164.864 68.608 41.643008 45.739008 62.464 113.664 62.464 203.776 0 0 0 374.784 0 374.784 0 0-196.608 0-196.608 0 0 0 0-350.208 0-350.208 0-91.476992-33.451008-137.216-100.352-137.216-47.787008 0-81.236992 24.576-100.352 73.728-4.096 8.192-6.144 24.576-6.144 49.152 0 0 0 364.544 0 364.544 0 0-198.656 0-198.656 0 0 0 0-430.08 0-430.08 0 0 0 0 0 0" />
+</svg></div>
+        </a>
+      </li></ul></div>
 </aside>
     <footer class="site-info">
-      <p>© Harry Kilian </p>
+      <p>© Harry Kilian 2015 - 2017</p>
       <p>Powered by <a title="Jekyll is a simple, blog-aware, static site generator." href="http://jekyllrb.com/">Jekyll</a> & <a
         title="TeXt is a succinct theme for blogging." href="https://github.com/kitian616/jekyll-TeXt-theme">TeXt Theme</a>.</p>
     </footer>
   </div>
-</div><script>
-      $(function() {
-        // display coding language
-        $(".highlight").each(function() {
-          $(this).attr("data-lang", $(this).find("code").attr("data-lang"));
-        });
-      });
-    </script></body>
+</div><script>(function () {
+  var $body = document.body;
+  function classnames(classes) {
+    var i, cur, _classes = '';
+    if (window.isString(classes)) {
+      _classes =  classes;
+    } else if (window.isArray(classes)) {
+      for (i = 0; i < classes.length; i++) {
+        cur = classes[i];
+        if (window.isString(cur)) {
+          _classes = _classes.concat(_classes ? ' ' + cur : cur);
+        }
+      }
+    } else {
+      return '';
+    }
+    return _classes;
+  }
+  function addClass(dom, classname) {
+    dom.setAttribute('class', classnames([dom.getAttribute('class'), classname]));
+  }
+  if (window.hasEvent('touchstart')) {
+    addClass($body, 'is-touch');
+    document.addEventListener('touchstart', function(){}, false);
+  } else {
+    addClass($body, 'not-touch');
+  }
+})();</script><script>
+  (function() {
+    var TEXT_VARIABLES = {
+      sources: {
+        jquery: 'https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js',
+        leancloud_js_sdk: '//cdn1.lncld.net/static/js/3.4.1/av-min.js',
+        chart: 'https://cdn.bootcss.com/Chart.js/2.7.1/Chart.bundle.min.js',
+        gitalk: {
+          js: 'https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.js',
+          css: 'https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.css'
+        },
+        mathjax: 'https://cdn.bootcss.com/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML',
+        mermaid: 'https://cdn.bootcss.com/mermaid/7.1.2/mermaid.min.js'
+      },
+      site: {
+        toc: {
+          selectors: 'h1,h2,h3'
+        }
+      }
+    };
+    window.TEXT_VARIABLES = TEXT_VARIABLES;
+  })();
+</script><script></script></body>
 </html>
