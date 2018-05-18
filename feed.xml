@@ -1,5 +1,63 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" hreflang="en" /><updated>2018-05-18T02:50:05+08:00</updated><id>http://localhost:4000/</id><title type="html">Harry Kilian</title><subtitle>Personal blog to post experiments.
-</subtitle><author><name>Harry Kilian</name></author><entry><title type="html">From Wordpress to Jekyll</title><link href="http://localhost:4000/jekyll/2018/01/27/From-wordpress-to-Jekyll.html" rel="alternate" type="text/html" title="From Wordpress to Jekyll" /><published>2018-01-27T05:18:37+08:00</published><updated>2018-01-27T05:18:37+08:00</updated><id>http://localhost:4000/jekyll/2018/01/27/From%20wordpress%20to%20Jekyll</id><content type="html" xml:base="http://localhost:4000/jekyll/2018/01/27/From-wordpress-to-Jekyll.html">&lt;p&gt;Decided to move the blog from &lt;a href=&quot;wordpress.com&quot;&gt;wordpress.com&lt;/a&gt; managed hosting over to github.io pages using the &lt;a href=&quot;https://jekyllrb.com/&quot;&gt;jekyll&lt;/a&gt; static site generator.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" hreflang="en" /><updated>2018-05-18T22:25:16+08:00</updated><id>http://localhost:4000/</id><title type="html">Harry Kilian</title><subtitle>Personal blog to post experiments.
+</subtitle><author><name>Harry Kilian</name></author><entry><title type="html">1:32 Scale Model Of ‘Betty’</title><link href="http://localhost:4000/modelmaking/2018/01/27/betty-model.html" rel="alternate" type="text/html" title="1:32 Scale Model Of 'Betty'" /><published>2018-01-27T05:18:37+08:00</published><updated>2018-01-27T05:18:37+08:00</updated><id>http://localhost:4000/modelmaking/2018/01/27/betty-model</id><content type="html" xml:base="http://localhost:4000/modelmaking/2018/01/27/betty-model.html">&lt;h2 id=&quot;plan&quot;&gt;Plan&lt;/h2&gt;
+
+&lt;h4 id=&quot;screens-from-the-film&quot;&gt;Screens From The film&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/betty/thumbs/ref1.png&quot; alt=&quot;screenshot&quot; height=&quot;190px&quot; width=&quot;190px&quot; class=&quot;rounded&quot; /&gt; 
+&lt;img src=&quot;/assets/betty/thumbs/ref2.png&quot; alt=&quot;screenshot&quot; height=&quot;190px&quot; width=&quot;190px&quot; class=&quot;rounded&quot; /&gt; 
+&lt;img src=&quot;/assets/betty/thumbs/ref3.png&quot; alt=&quot;screenshot&quot; height=&quot;190px&quot; width=&quot;190px&quot; class=&quot;rounded&quot; /&gt; 
+&lt;img src=&quot;/assets/betty/thumbs/ref4.png&quot; alt=&quot;screenshot&quot; height=&quot;190px&quot; width=&quot;190px&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;technical-drawing&quot;&gt;Technical Drawing&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/betty/bettydesign.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;blockout&quot;&gt;Blockout&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/build1.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/build2.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/build3.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/buildcockpit.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;details&quot;&gt;Details&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/details1.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/details4.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; width=&quot;380px&quot; /&gt;     
+&lt;img src=&quot;/assets/betty/details3.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; width=&quot;380px&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/details2.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/details6.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/details7.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/details8.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/detailswings.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;paint&quot;&gt;Paint&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/paint1.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/paint2.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/paint3.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/paint4.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/paint5.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/paintwings.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;finishing&quot;&gt;Finishing&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/weathering1.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/weathering2.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/betty/weathering3.jpg&quot; alt=&quot;screenshot&quot; class=&quot;rounded&quot; /&gt;&lt;/p&gt;</content><author><name>Harry Kilian</name></author><summary type="html">Plan Screens From The film Technical Drawing Blockout Details       Paint Finishing</summary></entry><entry><title type="html">From Wordpress to Jekyll</title><link href="http://localhost:4000/jekyll/2018/01/27/From-wordpress-to-Jekyll.html" rel="alternate" type="text/html" title="From Wordpress to Jekyll" /><published>2018-01-27T05:18:37+08:00</published><updated>2018-01-27T05:18:37+08:00</updated><id>http://localhost:4000/jekyll/2018/01/27/From%20wordpress%20to%20Jekyll</id><content type="html" xml:base="http://localhost:4000/jekyll/2018/01/27/From-wordpress-to-Jekyll.html">&lt;p&gt;Decided to move the blog from &lt;a href=&quot;wordpress.com&quot;&gt;wordpress.com&lt;/a&gt; managed hosting over to github.io pages using the &lt;a href=&quot;https://jekyllrb.com/&quot;&gt;jekyll&lt;/a&gt; static site generator.
 My primary motivation was that I want to be able to embed any content on the blog, perhaps some canvas/opengl stuff in the future.
 I could have gone the self-hosted wordpress route but of course you have to pay a hosting fee and there is set-up involved in doing that.&lt;/p&gt;
 
@@ -188,22 +246,4 @@ from jekyll. Basically I build the site myself and send just the html files to g
 
 &lt;p&gt;&lt;img src=&quot;/assets/12.png&quot; alt=&quot;screenshot&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/planetgen.png&quot; alt=&quot;screenshot&quot; /&gt;&lt;/p&gt;</content><author><name>Harry Kilian</name></author><summary type="html">I put together a little planet generator a few months ago, thought I would share. The generation is based on several parameters like temperature(distance to sun), size, population etc… then it churns out these neat little pixel art planets. Pretty simple but a cool result, this was done in Unity3D.</summary></entry><entry><title type="html">Update 10: GPU Picking</title><link href="http://localhost:4000/graphics/progress/2017/03/07/update-10-gpu-picking.html" rel="alternate" type="text/html" title="Update 10: GPU Picking" /><published>2017-03-07T23:38:57+08:00</published><updated>2017-03-07T23:38:57+08:00</updated><id>http://localhost:4000/graphics/progress/2017/03/07/update-10-gpu-picking</id><content type="html" xml:base="http://localhost:4000/graphics/progress/2017/03/07/update-10-gpu-picking.html">&lt;p&gt;Urho3d has a nice method for picking objects by casting a ray through the scene octree. This works well enough for picking objects using their AABBs but it was quite slow for picking points on a mesh. The issue now is that with the new terrain generation the mesh doesn’t even exist on the CPU, so it’s not possible now anyway. I thought about doing the picking on the GPU, and because,the world position for every point on screen has already been calculated for the positions buffer the work has pretty much been done already. Urho stores these buffers as textures, so I did a minor modification to the Urho3D internals and by binding the positions texture to a framebuffer I can do a glReadPixel() to get the value under the mouse cursor.&lt;/p&gt;
-
-&lt;p&gt;The issue with glReadPixel is that it’s super slow on some hardware, my mac was taking 10ms to get that one singular pixel. This is where ‘pixel buffer objects’ come into play. Using a PBO the call to glReadPixel is non blocking, so it won’t halt the application. Instead of reading directly into client memory the function will read values into a buffer, which you can retrieve values from later. A common set up would be to have 2+ PBO’s initiated, then alternate between reading and writing them each frame. So the data you get would be from the PBO written to on a previous frame.&lt;/p&gt;
-
-&lt;p&gt;Unfortunately my development machine is an older macbook pro and I was having real problems getting the glReadPixels to function asynchronously. Despite binding the PBO, when reading the pixels it would still halt the application. Despite lots and lots of testing I could see no solution to this, looks like a &lt;a href=&quot;https://www.opengl.org/discussion_boards/showthread.php/176221-async-glReadPixels-on-HD3000-stalls-the-pipeline&quot;&gt;bug &lt;/a&gt;beyond my control. Very annoying, however I was able to gain some performance by placing the glReadPixel before the scene is rendered. The way opengl works is that it won’t read the pixels until every other opengl call has been executed. This was a large part of why it was so slow before. Also by using a 32bit float for the texture instead of 16 bit half float seemed to help as well. I was able to take the performance to under a millisecond, however it seems to spike randomly, taking 5 to 10ms every 10th frame or so. On better hardware with proper PBO support it shouldn’t be any issue.&lt;/p&gt;
-
-&lt;p&gt;I’ve set up my shaders so they write an object ID into the alpha channel of the positions buffer. So figuring out the type of object under the mouse is easy. The idea is that I would use that ID to cull objects from a CPU side raycast.&lt;/p&gt;
-
-&lt;p&gt;Here you can see the results, I am now able to use the mouse to draw onto the terrain in real time. Converting grass tiles into sand tiles.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/screenshot_sun_mar__5_14_24_19_2017.png&quot; alt=&quot;screenshot&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/screenshot_sun_mar__5_14_24_50_2017.png&quot; alt=&quot;screenshot&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/screenshot_sun_mar__5_14_25_20_2017.png&quot; alt=&quot;screenshot&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Here is some good reading on PBO’s:
-&lt;a href=&quot;http://http.download.nvidia.com/developer/Papers/2005/Fast_Texture_Transfers/Fast_Texture_Transfers.pdf&quot;&gt;http://http.download.nvidia.com/developer/Papers/2005/Fast_Texture_Transfers/Fast_Texture_Transfers.pdf&lt;/a&gt;
-&lt;a href=&quot;https://www.seas.upenn.edu/~pcozzi/OpenGLInsights/OpenGLInsights-AsynchronousBufferTransfers.pdf&quot;&gt;https://www.seas.upenn.edu/~pcozzi/OpenGLInsights/OpenGLInsights-AsynchronousBufferTransfers.pdf&lt;/a&gt;&lt;/p&gt;</content><author><name>Harry Kilian</name></author><category term="opengl" /><category term="programming" /><category term="terrain" /><summary type="html">Urho3d has a nice method for picking objects by casting a ray through the scene octree. This works well enough for picking objects using their AABBs but it was quite slow for picking points on a mesh. The issue now is that with the new terrain generation the mesh doesn’t even exist on the CPU, so it’s not possible now anyway. I thought about doing the picking on the GPU, and because,the world position for every point on screen has already been calculated for the positions buffer the work has pretty much been done already. Urho stores these buffers as textures, so I did a minor modification to the Urho3D internals and by binding the positions texture to a framebuffer I can do a glReadPixel() to get the value under the mouse cursor. The issue with glReadPixel is that it’s super slow on some hardware, my mac was taking 10ms to get that one singular pixel. This is where ‘pixel buffer objects’ come into play. Using a PBO the call to glReadPixel is non blocking, so it won’t halt the application. Instead of reading directly into client memory the function will read values into a buffer, which you can retrieve values from later. A common set up would be to have 2+ PBO’s initiated, then alternate between reading and writing them each frame. So the data you get would be from the PBO written to on a previous frame. Unfortunately my development machine is an older macbook pro and I was having real problems getting the glReadPixels to function asynchronously. Despite binding the PBO, when reading the pixels it would still halt the application. Despite lots and lots of testing I could see no solution to this, looks like a bug beyond my control. Very annoying, however I was able to gain some performance by placing the glReadPixel before the scene is rendered. The way opengl works is that it won’t read the pixels until every other opengl call has been executed. This was a large part of why it was so slow before. Also by using a 32bit float for the texture instead of 16 bit half float seemed to help as well. I was able to take the performance to under a millisecond, however it seems to spike randomly, taking 5 to 10ms every 10th frame or so. On better hardware with proper PBO support it shouldn’t be any issue. I’ve set up my shaders so they write an object ID into the alpha channel of the positions buffer. So figuring out the type of object under the mouse is easy. The idea is that I would use that ID to cull objects from a CPU side raycast. Here you can see the results, I am now able to use the mouse to draw onto the terrain in real time. Converting grass tiles into sand tiles. Here is some good reading on PBO’s: http://http.download.nvidia.com/developer/Papers/2005/Fast_Texture_Transfers/Fast_Texture_Transfers.pdf https://www.seas.upenn.edu/~pcozzi/OpenGLInsights/OpenGLInsights-AsynchronousBufferTransfers.pdf</summary></entry></feed>
+&lt;p&gt;&lt;img src=&quot;/assets/planetgen.png&quot; alt=&quot;screenshot&quot; /&gt;&lt;/p&gt;</content><author><name>Harry Kilian</name></author><summary type="html">I put together a little planet generator a few months ago, thought I would share. The generation is based on several parameters like temperature(distance to sun), size, population etc… then it churns out these neat little pixel art planets. Pretty simple but a cool result, this was done in Unity3D.</summary></entry></feed>
